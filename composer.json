@@ -1,0 +1,26 @@
+{
+    "name": "snowiow/cocurl",
+    "license": "MIT",
+    "description": "Abstraction Layer for Clash of Clans API Results",
+    "type": "library",
+    "keywords": [
+        "cocurl",
+        "Clash",
+        "Clans",
+        "API"
+    ],
+    "require": {
+        "php": ">=7.0.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "5.0.*"
+    },
+    "autoload": {
+        "psr-4": {"COCUrl\\": "src/"}
+    },
+    "autoload-dev": {
+        "classmap": [
+            "tests/"
+        ]
+    }
+}
