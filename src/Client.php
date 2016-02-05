@@ -10,33 +10,52 @@ class Client
     const LEAGUES_URL = 'https://api.clashofclans.com/v1/leagues';
 
     /**
+     * Access Token to get into the coc api
      * @var string
      */
-    private $access_token;
+    private $accessToken;
 
-    private $curl_header = [
+    /**
+     * The options used for the curl header
+     * @var array
+     */
+    private $curlHeader = [
         'Accept: application/json',
     ];
 
-    private $curl_client;
+    /**
+     * The curl client
+     * @var resource
+     */
+    private $curlClient;
 
     /**
-     * COCUrl CTor.
+     * Client CTor.
      * @param string $access_token A valid access token to access the Clash of
      * Clans API
      */
-    public function __construct(string $access_token)
+    public function __construct(string $accessToken)
     {
-        $this->access_token  = $access_token;
-        $this->curl_header[] = 'Authorization: Bearer ' . $this->access_token;
+        $this->accessToken  = $accessToken;
+        $this->curlHeader[] = 'Authorization: Bearer ' . $this->accessToken;
     }
 
+    public function getAccessToken()
+    {
+        return $this->accessToken;
+    }
+
+    /**
+     * Returns all the leagues available in Clash of Clans. Calls the API at
+     * /leagues
+     * @return array of leagues currently available in Clash of Clans
+     */
     public function leagues(): array
     {
-        $this->curl_client = curl_init(self::LEAGUES_URL);
-        curl_setopt($this->curl_client, CURLOPT_HTTPHEADER, $this->curl_header);
-        curl_setopt($this->curl_client, CURLOPT_RETURNTRANSFER, true);
-        $results = json_decode(curl_exec($this->curl_client), true);
+        $this->curlClient = curl_init(self::LEAGUES_URL);
+        curl_setopt($this->curlClient, CURLOPT_HTTPHEADER, $this->curlHeader);
+        curl_setopt($this->curlClient, CURLOPT_RETURNTRANSFER, true);
+        $results = json_decode(curl_exec($this->curlClient), true);
         $leagues = [];
         foreach ($results['items'] as $result) {
             $leagues[] = League::create($result);
