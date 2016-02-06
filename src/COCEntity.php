@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * Holds COCEntity Class
+ */
 namespace COCUrl;
 
 /**
@@ -10,8 +12,9 @@ abstract class COCEntity
 {
     /**
      * Fills the data from an array into the given class
-     * @param array $data the data which will be filled into the class
-     * @param COCEntity &$entity the cocentity child which need to be filled
+     * @param array     $data   the data which will be filled into the class
+     * @param COCEntity $entity the cocentity child which need to be filled
+     * @return void
      */
     public static function fill(array $data, COCEntity &$entity)
     {

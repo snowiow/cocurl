@@ -1,48 +1,64 @@
 <?php
-
+/**
+ * Client Class
+ */
 namespace COCUrl;
 
+/**
+ * The Client Class uses a CURL Client to realize the API Calls
+ * @category COCUrl
+ * @package COCUrl
+ * @licence MIT
+ */
 class Client
 {
     /**
-     * @var string
+     * COC API Base URL
      */
-    const LEAGUES_URL = 'https://api.clashofclans.com/v1/leagues';
+    const BASE_URL = 'https://api.clashofclans.com/v1/';
+
+    /**
+     * The URL to retrieve league information from the coc api
+     */
+    const LEAGUES_URL = 'leagues';
+
+    /**
+     * The URL to retrieve clans information from the coc api
+     */
+    const CLANS_URL = 'clans';
+
+    const LOCATIONS_URL = 'locations';
 
     /**
      * Access Token to get into the coc api
-     * @var string
      */
-    private $accessToken;
+    private $_accessToken;
 
     /**
      * The options used for the curl header
-     * @var array
      */
-    private $curlHeader = [
+    private $_curlHeader = [
         'Accept: application/json',
     ];
 
     /**
-     * The curl client
-     * @var resource
-     */
-    private $curlClient;
-
-    /**
      * Client CTor.
-     * @param string $access_token A valid access token to access the Clash of
+     * @param string $accessToken A valid access token to access the Clash of
      * Clans API
      */
     public function __construct(string $accessToken)
     {
-        $this->accessToken  = $accessToken;
-        $this->curlHeader[] = 'Authorization: Bearer ' . $this->accessToken;
+        $this->_accessToken  = $accessToken;
+        $this->_curlHeader[] = 'Authorization: Bearer ' . $this->_accessToken;
     }
 
+    /**
+     * Retrieves the current access token
+     * @return string the access token given on creation
+     */
     public function getAccessToken()
     {
-        return $this->accessToken;
+        return $this->_accessToken;
     }
 
     /**
@@ -52,14 +68,39 @@ class Client
      */
     public function leagues(): array
     {
-        $this->curlClient = curl_init(self::LEAGUES_URL);
-        curl_setopt($this->curlClient, CURLOPT_HTTPHEADER, $this->curlHeader);
-        curl_setopt($this->curlClient, CURLOPT_RETURNTRANSFER, true);
-        $results = json_decode(curl_exec($this->curlClient), true);
+        $curlClient = curl_init(self::BASE_URL . self::LEAGUES_URL);
+        curl_setopt($curlClient, CURLOPT_HTTPHEADER, $this->_curlHeader);
+        curl_setopt($curlClient, CURLOPT_RETURNTRANSFER, true);
+        $results = json_decode(curl_exec($curlClient), true);
         $leagues = [];
         foreach ($results['items'] as $result) {
             $leagues[] = League::create($result);
         }
         return $leagues;
+    }
+
+    /**
+     * Returns all the locations available in Clash of Clans. Calls the API at
+     * /locations
+     * @return array of locations currently available in Clash of Clans
+     */
+    public function locations(): array
+    {
+        $curlClient = curl_init(self::BASE_URL . self::LOCATIONS_URL);
+        curl_setopt($curlClient, CURLOPT_HTTPHEADER, $this->_curlHeader);
+        curl_setopt($curlClient, CURLOPT_RETURNTRANSFER, true);
+        $results   = json_decode(curl_exec($curlClient), true);
+        $locations = [];
+        foreach ($results['items'] as $result) {
+            $locations[] = Location::create($result);
+        }
+        return $locations;
+    }
+
+    public function clans(array $params)
+    {
+        $url = self::BASE_URL . self::CLANS_URL;
+        $url .= http_build_query($params);
+        return $url;
     }
 }

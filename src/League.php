@@ -1,5 +1,7 @@
 <?php
-
+/**
+ *  League Class
+ */
 namespace COCUrl;
 
 /**
@@ -8,21 +10,23 @@ namespace COCUrl;
 final class League extends COCEntity
 {
     /**
-     * @vcom int unqiue identifier
+     * Unique identifier used by SuperCell
      */
     public $id;
 
     /**
-     * @var string league name
+     * Name of the League
      */
     public $name;
 
     /**
-     * @var array associative array with URLs to the league icons in different
-     * sizes
+     * Array of URLs to different sizes of a league image
      */
     public $iconUrls;
 
+    /**
+     * Private CTor. League Objects will be created via the create method
+     */
     private function __construct()
     {
     }
