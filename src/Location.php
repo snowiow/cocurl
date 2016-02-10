@@ -5,7 +5,7 @@ namespace COCUrl;
 /**
  * The COC API Location
  */
-class Location extends COCEntity
+final class Location extends COCEntity
 {
     /**
      * Unique identifier used by SuperCell

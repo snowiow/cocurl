@@ -85,12 +85,17 @@ class Client
     /**
      * Returns all the locations available in Clash of Clans. Calls the API at
      * /locations
-     * @param int $id a unique identifier for a location. If > 0, then only the
-     * Location will be returned, otherwise all
+     * @param int              $id   a unique identifier for a location. If > 0,
+     * then only the Location will be returned, otherwise all
+     * @param string|RankingId $rank The kind of ranking you want to retrieve.
+     * Clan based or Player based is supported.
      * @return array of locations currently available in Clash of Clans
      */
-    public function locations(int $id = 0)
+    public function locations(int $id = 0, $rank = RankingId::NONE)
     {
+        if ($id && $rank !== RankingId::NONE) {
+            return $this->_locationsByIdAndRank($id, $rank);
+        }
         if ($id) {
             return $this->_locationsById($id);
         }
@@ -124,5 +129,32 @@ class Client
         curl_setopt($curlClient, CURLOPT_RETURNTRANSFER, true);
         $result = json_decode(curl_exec($curlClient), true);
         return Location::create($result);
+    }
+
+    /**
+     * Based on a Location, retrieve the local rankings
+     * @param int              $id   the unique identifier of the location
+     * @param string|RankingId $rank the kind of ranking you want to retrieve.
+     * Based on Clans and based on players is supported at the moment.
+     * @return The clans/player who are located at the location id
+     */
+    private function _locationsByIdAndRank(int $id, $rank)
+    {
+        $curlClient = curl_init(
+            self::BASE_URL .
+            self::LOCATIONS_URL .
+            '/' .
+            $id .
+            '/rankings/' .
+            $rank
+        );
+        curl_setopt($curlClient, CURLOPT_HTTPHEADER, $this->_curlHeader);
+        curl_setopt($curlClient, CURLOPT_RETURNTRANSFER, true);
+        $results = json_decode(curl_exec($curlClient), true);
+        $clans   = [];
+        foreach ($results['items'] as $result) {
+            $clans[] = Clan::create($result);
+        }
+        return $clans;
     }
 }

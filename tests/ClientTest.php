@@ -47,4 +47,21 @@ class ClientTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(true, $location->isCountry);
         $this->assertEquals('DE', $location->countryCode);
     }
+
+    public function testLocationsWithIdAndRankForClans()
+    {
+        $germany_id = 32000094;
+        $rank       = COCUrl\RankingId::CLANS;
+        $cocUrl     = new COCUrl\Client(file_get_contents('my_key.txt'));
+        $clans      = $cocUrl->locations($germany_id, $rank);
+        $this->assertNotEmpty($clans);
+        $this->assertEquals('COCUrl\Clan', get_class($clans[0]));
+        $this->assertEquals('COCUrl\Location', get_class($clans[0]->location));
+        $this->assertEquals($germany_id, $clans[0]->location->id);
+    }
+
+    public function testLocationsWithIdAndRankForPlayers()
+    {
+
+    }
 }
