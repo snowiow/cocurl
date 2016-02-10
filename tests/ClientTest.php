@@ -27,6 +27,24 @@ class ClientTest extends PHPUnit_Framework_TestCase
         ];
         $cocUrl  = new COCUrl\Client(file_get_contents('my_key.txt'));
         $results = $cocUrl->clans($param_arr);
-        var_dump($results);
+    }
+
+    public function testLocations()
+    {
+        $cocUrl  = new COCUrl\Client(file_get_contents('my_key.txt'));
+        $results = $cocUrl->locations();
+        $found   = array_search('Germany', array_column($results, 'name'));
+        $this->assertTrue($found > 0);
+    }
+
+    public function testLocationsWithId()
+    {
+        $germany_id = 32000094;
+        $cocUrl     = new COCUrl\Client(file_get_contents('my_key.txt'));
+        $location   = $cocUrl->locations($germany_id);
+        $this->assertEquals($germany_id, $location->id);
+        $this->assertEquals('Germany', $location->name);
+        $this->assertTrue(true, $location->isCountry);
+        $this->assertEquals('DE', $location->countryCode);
     }
 }

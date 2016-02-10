@@ -27,6 +27,9 @@ class Client
      */
     const CLANS_URL = 'clans';
 
+    /**
+     * The URL to retrieve location information from the coc api
+     */
     const LOCATIONS_URL = 'locations';
 
     /**
@@ -82,10 +85,15 @@ class Client
     /**
      * Returns all the locations available in Clash of Clans. Calls the API at
      * /locations
+     * @param int $id a unique identifier for a location. If > 0, then only the
+     * Location will be returned, otherwise all
      * @return array of locations currently available in Clash of Clans
      */
-    public function locations(): array
+    public function locations(int $id = 0)
     {
+        if ($id) {
+            return $this->_locationsById($id);
+        }
         $curlClient = curl_init(self::BASE_URL . self::LOCATIONS_URL);
         curl_setopt($curlClient, CURLOPT_HTTPHEADER, $this->_curlHeader);
         curl_setopt($curlClient, CURLOPT_RETURNTRANSFER, true);
@@ -102,5 +110,19 @@ class Client
         $url = self::BASE_URL . self::CLANS_URL;
         $url .= http_build_query($params);
         return $url;
+    }
+
+    /**
+     * Returns a location with the given id
+     * @param int $id the unique identifier of the location
+     * @return The Location with the given id
+     */
+    private function _locationsById(int $id): Location
+    {
+        $curlClient = curl_init(self::BASE_URL . self::LOCATIONS_URL . '/' . $id);
+        curl_setopt($curlClient, CURLOPT_HTTPHEADER, $this->_curlHeader);
+        curl_setopt($curlClient, CURLOPT_RETURNTRANSFER, true);
+        $result = json_decode(curl_exec($curlClient), true);
+        return Location::create($result);
     }
 }
