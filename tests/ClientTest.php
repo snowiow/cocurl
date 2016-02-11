@@ -62,6 +62,13 @@ class ClientTest extends PHPUnit_Framework_TestCase
 
     public function testLocationsWithIdAndRankForPlayers()
     {
-
+        $germany_id = 32000094;
+        $rank       = COCUrl\RankingId::PLAYERS;
+        $cocUrl     = new COCUrl\Client(file_get_contents('my_key.txt'));
+        $players    = $cocUrl->locations($germany_id, $rank);
+        $this->assertNotEmpty($players);
+        $this->assertEquals('COCUrl\Player', get_class($players[0]));
+        $this->assertEquals('COCUrl\Clan', get_class($players[0]->clan));
+        $this->assertEquals('COCUrl\League', get_class($players[0]->league));
     }
 }

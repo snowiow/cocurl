@@ -66,7 +66,9 @@ final class Clan extends COCEntity
     {
         $clan = new Clan();
         parent::fill($data, $clan);
-        $clan->location = Location::create($clan->location);
+        if (is_array($clan->location)) {
+            $clan->location = Location::create($clan->location);
+        }
         return $clan;
     }
 }

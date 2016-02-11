@@ -151,10 +151,14 @@ class Client
         curl_setopt($curlClient, CURLOPT_HTTPHEADER, $this->_curlHeader);
         curl_setopt($curlClient, CURLOPT_RETURNTRANSFER, true);
         $results = json_decode(curl_exec($curlClient), true);
-        $clans   = [];
+        $items   = [];
         foreach ($results['items'] as $result) {
-            $clans[] = Clan::create($result);
+            if ($rank === RankingId::CLANS) {
+                $items[] = Clan::create($result);
+            } else {
+                $items[] = Player::create($result);
+            }
         }
-        return $clans;
+        return $items;
     }
 }
