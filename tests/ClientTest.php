@@ -17,16 +17,38 @@ class ClientTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('Unranked', $results[0]->name);
     }
 
-    public function testClans()
+    public function testClansByFilter()
     {
-        $param_arr = [
+        $ed_clan_tag = '#28PU922';
+        $params      = [
             'name'         => 'Eternal Deztiny',
             'warFrequency' => COCUrl\WarFrequency::ALWAYS,
             'locationId'   => 32000006, //International Code of COC API
-            '',
+            'minMembers'   => 2,
+            'maxMembers'   => 50,
+            'minClanLevel' => 9,
+            'limit'        => 5,
         ];
         $cocUrl  = new COCUrl\Client(file_get_contents('my_key.txt'));
-        $results = $cocUrl->clans($param_arr);
+        $results = $cocUrl->clans($params);
+
+        $this->assertTrue(count($results) > 0);
+        $this->assertEquals($params['name'], $results[0]->name);
+        $this->assertEquals($ed_clan_tag, $results[0]->tag);
+        $this->assertEquals($params['locationId'], $results[0]->location->id);
+    }
+
+    public function testClansByid()
+    {
+        $ed_clan_tag               = '#28PU922';
+        $international_location_id = 32000006; //International Code of COC API
+        $cocUrl                    = new COCUrl\Client(file_get_contents('my_key.txt'));
+        $result                    = $cocUrl->clans($ed_clan_tag);
+
+        $this->assertEquals('COCUrl\Clan', get_class($result));
+        $this->assertEquals('Eternal Deztiny', $result->name);
+        $this->assertEquals($ed_clan_tag, $result->tag);
+        $this->assertEquals($international_location_id, $result->location->id);
     }
 
     public function testLocations()

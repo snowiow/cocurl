@@ -50,6 +50,31 @@ final class Player extends COCEntity
     public $league;
 
     /**
+     * The role of a player inside a clan, if he has one
+     */
+    public $role;
+
+    /**
+     * The rank of the player inside a clan, if he has one
+     */
+    public $clanRank;
+
+    /**
+     * The rank of the player inside a clan, if he has one of the previous season
+     */
+    public $previousClanRank;
+
+    /**
+     * How many donations did the player do, if he has a clan
+     */
+    public $donations;
+
+    /**
+     * How many donations did the player received, if he has a clan
+     */
+    public $donationsReceived;
+
+    /**
      * Private CTor. Clan Objects will be created via the create method
      */
     private function __construct()

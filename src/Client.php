@@ -110,11 +110,42 @@ class Client
         return $locations;
     }
 
-    public function clans(array $params)
+    public function clans($param)
     {
-        $url = self::BASE_URL . self::CLANS_URL;
+        if (is_array($param)) {
+            return $this->_clansByFilter($param);
+        }
+        return $this->_clanById($param);
+    }
+
+    public function _clanById(string $param): Clan
+    {
+        $curlClient = curl_init(
+            self::BASE_URL .
+            self::CLANS_URL .
+            '/' .
+            \urlencode($param)
+        );
+        curl_setopt($curlClient, CURLOPT_HTTPHEADER, $this->_curlHeader);
+        curl_setopt($curlClient, CURLOPT_RETURNTRANSFER, true);
+        $result = json_decode(curl_exec($curlClient), true);
+        return Clan::create($result);
+    }
+
+    private function _clansByFilter(array $params): array
+    {
+        $url = self::BASE_URL . self::CLANS_URL . '?';
         $url .= http_build_query($params);
-        return $url;
+        $curlClient = curl_init($url);
+        curl_setopt($curlClient, CURLOPT_HTTPHEADER, $this->_curlHeader);
+        curl_setopt($curlClient, CURLOPT_RETURNTRANSFER, true);
+        $results = json_decode(curl_exec($curlClient), true);
+        $clans   = [];
+        foreach ($results['items'] as $result) {
+            $clans[] = Clan::create($result);
+        }
+
+        return $clans;
     }
 
     /**

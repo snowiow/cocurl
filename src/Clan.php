@@ -15,6 +15,16 @@ final class Clan extends COCEntity
     public $name;
 
     /**
+     * Type of the Clan (Open, inviteOnly etc.)
+     */
+    public $type;
+
+    /**
+     * The clans description
+     */
+    public $description;
+
+    /**
      * Location object, which holds the location information about this clan
      */
     public $location;
@@ -25,14 +35,29 @@ final class Clan extends COCEntity
     public $badgeURLs;
 
     /**
+     * The war frequency of the clan
+     */
+    public $warFrequency;
+
+    /**
      * The level of the Clan
      */
     public $clanLevel;
 
     /**
+     * Count of wars the clan won
+     */
+    public $warWins;
+
+    /**
      * how many members are currently in the clan
      */
     public $members;
+
+    /**
+     * How many trophies are required to join the clan
+     */
+    public $requiredTrophies;
 
     /**
      * How many trophy points does the clan have
@@ -48,6 +73,11 @@ final class Clan extends COCEntity
      * The ladder rank of the previous season
      */
     public $previousRank;
+
+    /*+
+     * Array of Members who are part of the clan
+     */
+    public $memberList;
 
     /**
      * Private CTor. Clan Objects will be created via the create method
