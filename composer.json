@@ -3,11 +3,20 @@
     "license": "MIT",
     "description": "Abstraction Layer for Clash of Clans API Results",
     "type": "library",
+    "homepage": "https://github.com/snowiow/cocurl",
     "keywords": [
         "cocurl",
         "Clash",
         "Clans",
         "API"
+    ],
+    "authors": [
+        {
+            "name": "Marcel Patzwahl",
+            "email": "marcel.patzwahl@gmail.com",
+            "homepage": "http://snow-dev.com",
+            "role": "Developer"
+        }
     ],
     "require": {
         "php": ">=7.0.0"
