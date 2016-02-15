@@ -30,7 +30,7 @@ final class Clan extends COCEntity
     public $location;
 
     /**
-     * array of links wiht different sizes of the clan badge image
+     * Array of links wiht different sizes of the clan badge image
      */
     public $badgeURLs;
 
@@ -50,7 +50,7 @@ final class Clan extends COCEntity
     public $warWins;
 
     /**
-     * how many members are currently in the clan
+     * How many members are currently in the clan
      */
     public $members;
 
@@ -98,6 +98,13 @@ final class Clan extends COCEntity
         parent::fill($data, $clan);
         if (is_array($clan->location)) {
             $clan->location = Location::create($clan->location);
+        }
+        if (is_array($clan->memberList)) {
+            $members = [];
+            foreach ($clan->memberList as $member) {
+                $members[] = Player::create($member);
+            }
+            $clan->memberList = $members;
         }
         return $clan;
     }

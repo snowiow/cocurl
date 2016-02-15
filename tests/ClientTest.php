@@ -51,6 +51,17 @@ class ClientTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($international_location_id, $result->location->id);
     }
 
+    public function testClansByMembersOnly()
+    {
+        $ed_clan_tag               = '#28PU922';
+        $international_location_id = 32000006; //International Code of COC API
+        $cocUrl                    = new COCUrl\Client(file_get_contents('my_key.txt'));
+        $results                   = $cocUrl->clans($ed_clan_tag, true);
+
+        $this->assertTrue(is_array($results));
+        $this->assertEquals('COCUrl\Player', get_class($results[0]));
+    }
+
     public function testLocations()
     {
         $cocUrl  = new COCUrl\Client(file_get_contents('my_key.txt'));

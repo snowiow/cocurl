@@ -110,15 +110,55 @@ class Client
         return $locations;
     }
 
-    public function clans($param)
+    /**
+     * Search for clans by different approaches.
+     * @param array|string $param if array it represents the possible filters,
+     * which can be send to the coc api. If it is a string it represents the clan tag
+     * which is send
+     * @return array|Clan if searched with filters, it returns an array with clans,
+     * who match the filter. If searched by tag, the Clan object is returned
+     */
+    public function clans($param, $members = false)
     {
         if (is_array($param)) {
             return $this->_clansByFilter($param);
+        } else if ($members) {
+            return $this->_clansMembersOnly($param);
         }
         return $this->_clanById($param);
     }
 
-    public function _clanById(string $param): Clan
+    /**
+     * Search for clan members only of a specific clan
+     * @param string $param the clan tag
+     * @return array array of player who are members of the clan, hwich matches the
+     * clan tag
+     */
+    private function _clansMembersOnly(string $param): array
+    {
+        $curlClient = curl_init(
+            self::BASE_URL .
+            self::CLANS_URL .
+            '/' .
+            \urlencode($param) .
+            '/members'
+        );
+        curl_setopt($curlClient, CURLOPT_HTTPHEADER, $this->_curlHeader);
+        curl_setopt($curlClient, CURLOPT_RETURNTRANSFER, true);
+        $results = json_decode(curl_exec($curlClient), true);
+        $members = [];
+        foreach ($results['items'] as $result) {
+            $members[] = Player::create($result);
+        }
+        return $members;
+    }
+
+    /**
+     * Retrieves the clan, who matches the given id
+     * @param string $param the clan tag
+     * @return Clan a Clan object, containing the searched clan
+     */
+    private function _clanById(string $param): Clan
     {
         $curlClient = curl_init(
             self::BASE_URL .
@@ -132,6 +172,12 @@ class Client
         return Clan::create($result);
     }
 
+    /**
+     * Retrieves a list of clans, who matches a set of filters
+     * @param array $params an array of filters. Keys are the names of filters, like
+     * they are defined in the coc api, values are the filter values
+     * @return array an array of clans who match the filters
+     */
     private function _clansByFilter(array $params): array
     {
         $url = self::BASE_URL . self::CLANS_URL . '?';
