@@ -7,7 +7,13 @@
 COCUrl is a PHP framework with the goal to interact with the Clash of Clans Developer API more easily. It creates an object oriented layer above the raw cURL requests and offers Objects and Enums for the most common types returned by the CoC API. Sending requests is as easy as calling some functions on a object.
 
 # Installation
-This section is coming soon.
+Installation via composer is currently supported. Just add the following line to the require key in your ```composer.json``` file inside your project directory.
+```json
+"require": {
+  "snowiow/cocurl": "dev-master"
+}
+```
+Instead of dev-master you can also use any specified version you like. For more informations visit the [composer website](https://getcomposer.org/doc/01-basic-usage.md) 
 
 # How to use?
 Everything starts with the ```Client``` class. It needs an API key to be created. 
